@@ -1,9 +1,10 @@
 import { motion, useCycle } from "framer-motion";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-import useDimensions from "./use-dimensions";
+import { useRef, useState, useEffect } from "react";
+
+// component
 import { Navigation } from "./Navigation";
-import { useRef } from "react";
 
 const sidebar = {
   open: (height = 1000) => ({
@@ -113,11 +114,20 @@ const MenuBg = styled(motion.div)`
 `;
 
 const Header = () => {
+  const dimensions = useRef({ width: 0, height: 0 });
+  const containerRef = useRef(null);
+  const [height, setHeight] = useState(null);
   const [z_index, setZindex] = useCycle(0, 9);
   const [logo_z, setLogo_z] = useCycle(9, 0);
   const [isOpen, toggleOpen] = useCycle(false, true);
-  const containerRef = useRef(null);
-  const { height } = useDimensions(containerRef);
+
+  useEffect(() => {
+    dimensions.current.width = containerRef.current.offsetWidth;
+    dimensions.current.height = containerRef.current.offsetHeight;
+    const { height } = dimensions.current;
+    setHeight(height);
+  }, []);
+
   return (
     <>
       <HeaderStyle
